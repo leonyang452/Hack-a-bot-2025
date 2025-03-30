@@ -12,14 +12,12 @@ from picamera2.devices.imx500 import (NetworkIntrinsics,
 
 last_detections = []
 
-
 class Detection:
     def __init__(self, coords, category, conf, metadata):
         """Create a Detection object, recording the bounding box, category and confidence."""
         self.category = category
         self.conf = conf
         self.box = imx500.convert_inference_coords(coords, metadata, picam2)
-
 
 def parse_detections(metadata: dict):
     """Parse the output tensor into a number of detected objects, scaled to the ISP output."""
@@ -56,6 +54,9 @@ def parse_detections(metadata: dict):
         if score > threshold
     ]
 
+    with open("lol.txt", "a") as f:
+        print(classes)
+    
     return last_detections
 
 
