@@ -57,6 +57,9 @@ def parse_detections(metadata: dict):
     ]
     return last_detections
 
+def num_classes():
+   print(classes) 
+
 
 @lru_cache
 def get_labels():
@@ -177,3 +180,5 @@ if __name__ == "__main__":
     picam2.pre_callback = draw_detections
     while True:
         last_results = parse_detections(picam2.capture_metadata())
+        print(class)
+
