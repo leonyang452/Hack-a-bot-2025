@@ -5,7 +5,11 @@ from picamera2.devices.imx500 import (NetworkIntrinsics,
 
 
 import os
+import subprocess
 
 
+#rpicam-jpeg --post-process-file /usr/share/rpi-camera-assets/imx500_mobilenet_ssd.json --output test.jpeg
+#rpicam-jpeg --post-process-file /usr/share/rpi-camera-assets/imx500_mobilenet_ssd.json --output test.jpeg
 
-rpicam-jpeg --post-process-file /usr/share/rpi-camera-assets/imx500_mobilenet_ssd.json -o test.jpeg
+#os.system(rpicam-jpeg --post-process-file /usr/share/rpi-camera-assets/imx500_mobilenet_ssd.json --output test.jpeg)
+
