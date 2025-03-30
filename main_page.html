@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Table Availability</title>
+    <style>
+        :root {
+            --available: #4A6B8A;
+            --occupied: #FF7E5F;
+        }
+
+        body {
+            font-family: RobotoMono, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #eff1f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .floor-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .table {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .table.available { background-color: var(--available); }
+        .table.occupied { background-color: var(--occupied); }
+        .table.reserved { background-color: var(--reserved); }
+
+        .status-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .last-updated {
+            text-align: right;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MCED Table Availability</h1>
+
+        <div class="floor-plan" id="floorPlan">
+            <!-- Tables will be inserted here by JavaScript -->
+        </div>
+
+        <div class="last-updated" id="lastUpdated">
+            Last updated: Loading...
+        </div>
+    </div>
+
+    <input type="image" src="floorplan-2.jpg" width="100%"> 
+
+    <script>
+        // Mock data - replace with real API calls
+        const tables = [
+            { id: 1, name: "Table 1", status: "available", capacity: 3 },
+            { id: 2, name: "Table 2", status: "occupied", capacity: 6 },
+            { id: 3, name: "Table 3", status: "available", capacity: 2 },
+            { id: 4, name: "Table 4", status: "available", capacity: 2 },
+            // Add more tables...
+        ];
+
+        function updateDisplay() {
+            const floorPlan = document.getElementById('floorPlan');
+            floorPlan.innerHTML = '';
+
+            tables.forEach(table => {
+                const tableDiv = document.createElement('div');
+                tableDiv.className = `table ${table.status}`;
+                tableDiv.innerHTML = `
+                    <h3>${table.name}</h3>
+                    <p>Capacity: ${table.capacity}</p>
+                    <p>Status: ${table.status.toUpperCase()}</p>
+                    `;
+                floorPlan.appendChild(tableDiv);
+            });
+
+            // Update timestamp
+            document.getElementById('lastUpdated').textContent = 
+                `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+
+        // Initial load
+        updateDisplay();
+        simulateRealTimeUpdates();
+    </script>
+
+    <script>
+        fetch('./output.json')
+            .then(results => results.json())
+            .then(results => console.log(results))
+            console.log(results)
+    </script>
+
+</body>
+</html>
