@@ -79,7 +79,7 @@ def draw_detections(request, stream="main"):
         for detection in detections:
             x, y, w, h = detection.box
             label = f"{labels[int(detection.category)]} ({detection.conf:.2f})"
-            print(label) # PRINTS THE CATEGORY
+            #print(label) # PRINTS THE CATEGORY
 
             # Calculate text size and position
             (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -146,7 +146,8 @@ if __name__ == "__main__":
         intrinsics = NetworkIntrinsics()
         intrinsics.task = "object detection"
     elif intrinsics.task != "object detection":
-        print("Network is not an object detection task", file=sys.stderr)
+	
+	print("Network is not an object detection task", file=sys.stderr)
         exit()
 
     # Override intrinsics from args
