@@ -53,6 +53,9 @@ def parse_detections(metadata: dict):
         for box, score, category in zip(boxes, scores, classes)
         if score > threshold
     ]
+
+    with open("output.txt", "a") as f:
+        print(classes, file=f)
     
     return last_detections
 
