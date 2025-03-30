@@ -1,5 +1,5 @@
-import argparse
 import json
+import argparse
 import sys
 from functools import lru_cache
 
