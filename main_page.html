@@ -35,11 +35,11 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s;
+            color: #eff1f5;
         }
 
         .table.available { background-color: var(--available); }
         .table.occupied { background-color: var(--occupied); }
-        .table.reserved { background-color: var(--reserved); }
 
         .status-legend {
             display: flex;
@@ -82,13 +82,12 @@
     <input type="image" src="floorplan-2.jpg" width="100%"> 
 
     <script>
-        // Mock data - replace with real API calls
-        const tables = [
-            { id: 1, name: "Table 1", status: "available", capacity: 3 },
-            { id: 2, name: "Table 2", status: "occupied", capacity: 6 },
-            { id: 3, name: "Table 3", status: "available", capacity: 2 },
-            { id: 4, name: "Table 4", status: "available", capacity: 2 },
-            // Add more tables...
+        // Table data
+        let tables = [
+            { id: 1, name: "Table 1", status: "available", capacity: 8 },
+            { id: 2, name: "Table 2", status: "available", capacity: 6 },
+            { id: 3, name: "Table 3", status: "occupied", capacity: 2 },
+            { id: 4, name: "Table 4", status: "occupied", capacity: 2 },
         ];
 
         function updateDisplay() {
@@ -100,28 +99,51 @@
                 tableDiv.className = `table ${table.status}`;
                 tableDiv.innerHTML = `
                     <h3>${table.name}</h3>
-                    <p>Capacity: ${table.capacity}</p>
+                    <p>Avaliable: ${table.capacity}</p>
                     <p>Status: ${table.status.toUpperCase()}</p>
-                    `;
+                `;
                 floorPlan.appendChild(tableDiv);
             });
 
-            // Update timestamp
             document.getElementById('lastUpdated').textContent = 
                 `Last updated: ${new Date().toLocaleTimeString()}`;
         }
 
+        // Fetch and update capacity
+        function updateTableCapacity() {
+            fetch('./output.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming your JSON returns { person: X }
+                    const remainingCapacity = 8 - data.person;
+                    
+                    // Update Table 1's capacity
+                    tables = tables.map(table => {
+                        if (table.id === 1) {
+                            return {
+                                ...table,
+                                capacity: remainingCapacity > 0 ? remainingCapacity : 0,
+                                status: remainingCapacity > 3 ? "available" : "occupied"
+                            };
+                        }
+                        return table;
+                    });
+                    
+                    updateDisplay();
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('lastUpdated').textContent = 
+                        `Error updating data: ${error.message}`;
+                });
+        }
+
         // Initial load
         updateDisplay();
-        simulateRealTimeUpdates();
+        
+        // Update every 5 seconds
+        setInterval(updateTableCapacity, 5000);
+        updateTableCapacity(); // Immediate first update
     </script>
-
-    <script>
-        fetch('./output.json')
-            .then(results => results.json())
-            .then(results => console.log(results))
-            console.log(results)
-    </script>
-
 </body>
 </html>
