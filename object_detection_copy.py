@@ -30,7 +30,7 @@ def parse_detections(metadata: dict):
     iou = args.iou
     max_detections = args.max_detections
 
-    np_outputs = imx500.get_outputs(metadata, add_batch=True) # TENSOR DATA
+    np_outputs = imx500.get_outputs(metadata, add_batch=True)  # TENSOR DATA
     input_w, input_h = imx500.get_input_size()
     if np_outputs is None:
         return last_detections
@@ -79,10 +79,11 @@ def draw_detections(request, stream="main"):
         for detection in detections:
             x, y, w, h = detection.box
             label = f"{labels[int(detection.category)]} ({detection.conf:.2f})"
-            #print(label) # PRINTS THE CATEGORY
+            # print(label) # PRINTS THE CATEGORY
 
             # Calculate text size and position
-            (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+            (text_width, text_height), baseline = cv2.getTextSize(
+                label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
             text_x = x + 5
             text_y = y + 15
 
@@ -104,13 +105,16 @@ def draw_detections(request, stream="main"):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
             # Draw detection box
-            cv2.rectangle(m.array, (x, y), (x + w, y + h), (0, 255, 0, 0), thickness=2)
+            cv2.rectangle(m.array, (x, y), (x + w, y + h),
+                          (0, 255, 0, 0), thickness=2)
 
         if intrinsics.preserve_aspect_ratio:
             b_x, b_y, b_w, b_h = imx500.get_roi_scaled(request)
             color = (255, 0, 0)  # red
-            cv2.putText(m.array, "ROI", (b_x + 5, b_y + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
-            cv2.rectangle(m.array, (b_x, b_y), (b_x + b_w, b_y + b_h), (255, 0, 0, 0))
+            cv2.putText(m.array, "ROI", (b_x + 5, b_y + 15),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+            cv2.rectangle(m.array, (b_x, b_y),
+                          (b_x + b_w, b_y + b_h), (255, 0, 0, 0))
 
 
 def get_args():
@@ -118,13 +122,18 @@ def get_args():
     parser.add_argument("--model", type=str, help="Path of the model",
                         default="/usr/share/imx500-models/imx500_network_ssd_mobilenetv2_fpnlite_320x320_pp.rpk")
     parser.add_argument("--fps", type=int, help="Frames per second")
-    parser.add_argument("--bbox-normalization", action=argparse.BooleanOptionalAction, help="Normalize bbox")
+    parser.add_argument("--bbox-normalization",
+                        action=argparse.BooleanOptionalAction, help="Normalize bbox")
     parser.add_argument("--bbox-order", choices=["yx", "xy"], default="yx",
                         help="Set bbox order yx -> (y0, x0, y1, x1) xy -> (x0, y0, x1, y1)")
-    parser.add_argument("--threshold", type=float, default=0.55, help="Detection threshold")
-    parser.add_argument("--iou", type=float, default=0.65, help="Set iou threshold")
-    parser.add_argument("--max-detections", type=int, default=10, help="Set max detections")
-    parser.add_argument("--ignore-dash-labels", action=argparse.BooleanOptionalAction, help="Remove '-' labels ")
+    parser.add_argument("--threshold", type=float,
+                        default=0.55, help="Detection threshold")
+    parser.add_argument("--iou", type=float, default=0.65,
+                        help="Set iou threshold")
+    parser.add_argument("--max-detections", type=int,
+                        default=10, help="Set max detections")
+    parser.add_argument("--ignore-dash-labels",
+                        action=argparse.BooleanOptionalAction, help="Remove '-' labels ")
     parser.add_argument("--postprocess", choices=["", "nanodet"],
                         default=None, help="Run post process of type")
     parser.add_argument("-r", "--preserve-aspect-ratio", action=argparse.BooleanOptionalAction,
@@ -146,8 +155,8 @@ if __name__ == "__main__":
         intrinsics = NetworkIntrinsics()
         intrinsics.task = "object detection"
     elif intrinsics.task != "object detection":
-	
-	print("Network is not an object detection task", file=sys.stderr)
+
+        print("Network is not an object detection task", file=sys.stderr)
         exit()
 
     # Override intrinsics from args
@@ -169,7 +178,8 @@ if __name__ == "__main__":
         exit()
 
     picam2 = Picamera2(imx500.camera_num)
-    config = picam2.create_preview_configuration(controls={"FrameRate": intrinsics.inference_rate}, buffer_count=12)
+    config = picam2.create_preview_configuration(
+        controls={"FrameRate": intrinsics.inference_rate}, buffer_count=12)
 
     imx500.show_network_fw_progress_bar()
     picam2.start(config, show_preview=True)
