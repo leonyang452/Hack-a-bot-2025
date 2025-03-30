@@ -55,7 +55,7 @@ def parse_detections(metadata: dict):
     ]
 
     with open("lol.txt", "a") as f:
-        print(classes)
+        print(classes, file=f)
     
     return last_detections
 
