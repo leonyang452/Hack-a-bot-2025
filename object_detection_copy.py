@@ -1,4 +1,5 @@
 import argparse
+import json
 import sys
 from functools import lru_cache
 
@@ -54,9 +55,6 @@ def parse_detections(metadata: dict):
         if score > threshold
     ]
 
-    with open("output.txt", "a") as f:
-        print(classes, file=f)
-    
     return last_detections
 
 
@@ -76,12 +74,12 @@ def draw_detections(request, stream="main"):
     if detections is None:
         return
     labels = get_labels()
+    d = {}
     with MappedArray(request, stream) as m:
         for detection in detections:
             x, y, w, h = detection.box
             label = f"{labels[int(detection.category)]} ({detection.conf:.2f})"
-            # print(label) # PRINTS THE CATEGORY
-
+            d[labels[int(detection.category)]] = d.get(labels[int(detection.category)], 0) + 1
             # Calculate text size and position
             (text_width, text_height), baseline = cv2.getTextSize(
                 label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -117,6 +115,8 @@ def draw_detections(request, stream="main"):
             cv2.rectangle(m.array, (b_x, b_y),
                           (b_x + b_w, b_y + b_h), (255, 0, 0, 0))
 
+    with open("output.json", "w") as f:
+        json.dump(d, f, indent=4)
 
 def get_args():
     parser = argparse.ArgumentParser()
