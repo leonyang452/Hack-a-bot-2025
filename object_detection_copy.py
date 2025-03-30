@@ -55,10 +55,8 @@ def parse_detections(metadata: dict):
         for box, score, category in zip(boxes, scores, classes)
         if score > threshold
     ]
-    return last_detections
 
-def num_classes():
-   print(classes) 
+    return last_detections
 
 
 @lru_cache
@@ -67,6 +65,7 @@ def get_labels():
 
     if intrinsics.ignore_dash_labels:
         labels = [label for label in labels if label and label != "-"]
+
     return labels
 
 
@@ -80,6 +79,7 @@ def draw_detections(request, stream="main"):
         for detection in detections:
             x, y, w, h = detection.box
             label = f"{labels[int(detection.category)]} ({detection.conf:.2f})"
+            print(label) # PRINTS THE CATEGORY
 
             # Calculate text size and position
             (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -180,5 +180,3 @@ if __name__ == "__main__":
     picam2.pre_callback = draw_detections
     while True:
         last_results = parse_detections(picam2.capture_metadata())
-        print(class)
-
