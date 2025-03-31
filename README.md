@@ -1,2 +1,2 @@
 # Hack-a-bot-2025
-WHO DID THIS????
+Using a IMX500 AI Camera to detect humans to show how available tables
